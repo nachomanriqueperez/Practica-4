@@ -4,7 +4,8 @@ var sprites = {
     enemy_purple: { sx: 37, sy: 0, w: 42, h: 43, frames: 1 },
     enemy_bee: { sx: 79, sy: 0, w: 37, h: 43, frames: 1 },
     enemy_ship: { sx: 116, sy: 0, w: 42, h: 43, frames: 1 },
-    enemy_circle: { sx: 158, sy: 0, w: 32, h: 33, frames: 1 }
+    enemy_circle: { sx: 158, sy: 0, w: 32, h: 33, frames: 1 },
+    Fireball : { sx : 0, sy:64 , w:64 , h:64, frames : 1}
 };
 
 
@@ -159,8 +160,7 @@ var PlayerShip = function() {
 	    this.reload = this.reloadTime;
 
 	    // Se añaden al gameboard 2 misiles 
-	    this.board.add(new PlayerMissile(this.x,this.y+this.h/2));
-	    this.board.add(new PlayerMissile(this.x+this.w,this.y+this.h/2));
+	     this.board.add(new FireBallN(this.x+this.w,this.y+this.h/2));
 	}
 
 	if(Game.keys['fireB'] && this.reload < 0) {
@@ -169,8 +169,7 @@ var PlayerShip = function() {
 	    this.reload = this.reloadTime;
 
 	    // Se añaden al gameboard 2 misiles 
-	    this.board.add(new PlayerMissile(this.x,this.y+this.h/2));
-	    this.board.add(new PlayerMissile(this.x+this.w,this.y+this.h/2));
+	    this.board.add(new FireBallB(this.x+this.w,this.y+this.h/2));
 	}
     }
  
@@ -201,6 +200,50 @@ PlayerMissile.prototype.step = function(dt)  {
 
 PlayerMissile.prototype.draw = function(ctx)  {
     SpriteSheet.draw(ctx,'missile',this.x,this.y);
+};
+
+var FireBallN = function(x,y) {
+    this.w = SpriteSheet.map['Fireball'].w;
+    this.h = SpriteSheet.map['Fireball'].h;
+    this.x = x - this.w/2; 
+
+    this.y = y - this.h; 
+    this.vy = -1000;
+    this.vx = -150;
+};
+
+FireBallN.prototype.step = function(dt)  {
+    this.x += this.vx * dt;
+    this.y += this.vy * dt;
+    this.vy=this.vy+100;
+    if(this.y < -this.h) { this.board.remove(this); }
+    if(this.x < -this.w) { this.board.remove(this); }
+};
+
+FireBallN.prototype.draw = function(ctx)  {
+    SpriteSheet.draw(ctx,'Fireball',this.x,this.y);
+};
+
+var FireBallB = function(x,y) {
+    this.w = SpriteSheet.map['Fireball'].w;
+    this.h = SpriteSheet.map['Fireball'].h;
+    this.x = x - this.w/2; 
+
+    this.y = y - this.h; 
+    this.vy = -1000;
+    this.vx = -150;
+};
+
+FireBallB.prototype.step = function(dt)  {
+    this.x += this.vx * -dt;
+    this.y += this.vy * dt;
+    this.vy=this.vy+100;
+    if(this.y < -this.h) { this.board.remove(this); }
+    if(this.x < -this.w) { this.board.remove(this); }
+};
+
+FireBallB.prototype.draw = function(ctx)  {
+    SpriteSheet.draw(ctx,'Fireball',this.x,this.y);
 };
 
 

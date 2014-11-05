@@ -49,7 +49,6 @@ var Game = new function() {
 		return false;
 	    }
 	});
-	
     }
 
 

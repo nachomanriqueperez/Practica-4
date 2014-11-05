@@ -1,0 +1,27 @@
+describe("FireBall", function(){
+	var canvas, ctx;
+	beforeEach(function(){
+	loadFixtures('index.html');
+	canvas = $('#game')[0];
+	expect(canvas).toExist();
+	ctx = canvas.getContext('2d');
+	expect(ctx).toBeDefined();
+});
+//Bolas de fuego
+it("Funciona Fireball",function(){
+
+	SpriteSheet = {
+		map : {Fireball: { sx: 0, sy: 30, w: 2, h: 10, frames: 1 },
+		ship: { sx: 0, sy: 0, w: 37, h: 42, frames: 1 }},};
+
+		var board = new GameBoard();
+		var miNave = new PlayerShip();
+		board.add(miNave);
+		expect(board.objects.length).toBe(1);
+		Game = {keys: {'fireB': true}};
+
+		board.step(5);
+		expect(board.objects.length).toBe(2);
+
+	});
+});

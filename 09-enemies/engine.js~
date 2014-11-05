@@ -118,27 +118,6 @@ var SpriteSheet = new function() {
                       Math.floor(x), Math.floor(y),
                       s.w, s.h);
     };
-
-   //FUEGO CON B
-if(!Game.keys['fireB']) this.upB = true;
-if(Game.keys['fireB'] && this.reload < 0 && this.upB ) {
-// Esta pulsada la tecla de disparo y ya ha pasado el tiempo reload
-//Game.keys['fire'] = false;
-this.reload = this.reloadTime;
-// Se añaden al gameboard 2 misiles
-this.board.add(new FireBallB(this.x+this.w,this.y+this.h/2));
-this.upB=false;
-}
-//FUEGO CON N
-if(!Game.keys['fireN']) this.upN = true;
-if(Game.keys['fireN'] && this.reload < 0 && this.upN ) {
-// Esta pulsada la tecla de disparo y ya ha pasado el tiempo reload
-//Game.keys['fire'] = false;
-this.reload = this.reloadTime;
-// Se añaden al gameboard 2 misiles
-this.board.add(new FireBallN(this.x+this.w,this.y+this.h/2));
-this.upN=false;
-}
 }
 
 
