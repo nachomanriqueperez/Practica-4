@@ -56,3 +56,147 @@
     colisionado con objetos de cierto tipo, no con todos los objetos.
 
 */
+
+
+describe("GameBoard", function(){
+		
+		var canvas, ctx;
+		var board; 
+
+		beforeEach(function(){
+	
+			loadFixtures('index.html');
+
+			canvas = $('#game')[0];
+			expect(canvas).toExist();
+
+			ctx = canvas.getContext('2d');
+			expect(ctx).toBeDefined(); 
+			board = new GameBoard();
+		});
+
+	
+
+	it("GameBoard.remove", function(){
+		var objetoPrueba = {};
+
+		spyOn(board,"remove").andCallThrough();
+		spyOn(board,"resetRemoved").andCallThrough();
+		spyOn(board,"finalizeRemoved").andCallThrough();
+
+		board.add(objetoPrueba);
+		board.resetRemoved()
+		board.remove(objetoPrueba);
+
+		expect(board.removed[0]).toBe(objetoPrueba);
+		expect(board.resetRemoved).toHaveBeenCalled();
+
+		board.finalizeRemoved();
+		expect(board.objects.length).toBe(0);
+		board.resetRemoved();
+		expect(board.removed.length).toBe(0);
+		expect(board.finalizeRemoved).toHaveBeenCalled();
+
+	});
+
+	it("GameBoard.add()", function(){
+		
+		var objetoVacio= {};
+		var objeto2= board.add(objetoVacio);
+		expect(board.objects[0]).toBe(objetoVacio);
+		expect(objeto2.board).toBe(board);
+	});
+
+	it("GameBoard.overlap()", function(){
+
+		var objReferencia = {x:0, y:0, w:5, h:10};
+                var objColision = {x:0, y:2, w:10, h:10};
+		var objNoColision = {x:20, y:20 , w:5 , h:5};
+
+		expect(board.overlap(objReferencia,objColision)).toEqual(true);
+		expect(board.overlap(objReferencia,objNoColision)).toEqual(false);
+	});
+
+	it("GameBoard.collide()", function(){
+
+		var objReferencia = {x:0, y:0, w:5, h:10, type:0};
+                var objColision = {x:0, y:2, w:10, h:10, type:2};
+		var objNoColision = {x:20, y:20 , w:5 , h:5, type:4};
+
+		board.add(objReferencia);
+		board.add(objColision);
+		board.add(objNoColision);
+
+		expect(board.collide(objReferencia,objColision.type)).toBe(objColision);
+		expect(board.collide(objReferencia,objNoColision.type)).toBe(false);
+
+	});
+
+	it("GameBoard.step()", function(){
+				
+		var dt = {};
+
+		spyOn(board,"resetRemoved");
+		spyOn(board,"iterate");
+		spyOn(board,"finalizeRemoved");
+
+		board.step(dt);
+
+		expect(board.resetRemoved).toHaveBeenCalled();
+		expect(board.iterate).toHaveBeenCalled();
+		expect(board.finalizeRemoved).toHaveBeenCalled();
+		
+	});
+
+	it("GameBoard.draw()", function(){
+				
+		var ctx = {};
+
+		spyOn(board,"iterate");
+
+		board.draw(ctx);
+
+		expect(board.iterate).toHaveBeenCalled();
+		
+	});
+
+	it("GameBoard.iterate", function(){
+		var aux1 = {draw : function(){},step: function(){}};
+		var aux2 = {draw : function(){},step: function(){}};
+
+		board.add(aux1);
+		board.add(aux2);
+
+		spyOn(aux1, "draw");
+		spyOn(aux2, "step");
+
+		board.iterate("draw",10);
+		board.iterate("step",10);
+
+		expect(aux1.draw).toHaveBeenCalledWith(10);
+		expect(aux2.step).toHaveBeenCalledWith(10);
+	
+	});
+
+	it("GameBoard.detect", function(){
+		var funcionchorra = function(){
+			if (this.num === 1){
+			  	return false;
+			}else{
+			  	return true;
+			};
+		};
+
+		var aux1 = {num : 1};
+		var aux2 = {num : 2};
+
+		board.add(aux1);
+		board.add(aux2);
+
+		var detectado = board.detect(funcionchorra);
+
+		expect(detectado).toBe(aux2);
+ 
+	});
+
+});
